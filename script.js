@@ -12,21 +12,18 @@ const inputCadence = document.querySelector('.form__input--cadence');
 const inputElevation = document.querySelector('.form__input--elevation');
 
 // Geolocation
-let map;
-let mapEvent;
+
 class App {
+    #map;
+    #mapEvent;
     constructor() {
         this._getPosition();
     }
     _getPosition() {
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(
-                function (position) {
-                    this._loadMap(position);
-                    // My code to implement the form  features🏆
-                    // });
-
-                },
+                // It is a callback, which doesn't need an argument
+                this._loadMap.bind(this),
                 function () {
                     console.log("The second funciton will be used if the first didn't apply");
                 }
@@ -39,18 +36,18 @@ class App {
     _loadMap(position) {
         const coordinates = [position.coords.latitude, position.coords.longitude];
         // Getting the map From leaflet
-        map = L.map('map').setView(coordinates, 13);
+        this.#map = L.map('map').setView(coordinates, 13);
 
         L.tileLayer('https://tile.openstreetmap.fr/hot/{z}/{x}/{y}.png', {
             attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-        }).addTo(map);
+        }).addTo(this.#map);
 
-        L.marker(coordinates).addTo(map)
+        L.marker(coordinates).addTo(this.#map)
             .bindPopup('A pretty CSS popup.<br> Easily customizable.')
             .openPopup();
         // to identify the click coords in the map
-        map.on('click', function (e) {
-            mapEvent = e;
+        this.#map.on('click', function (e) {
+            this.#mapEvent = e;
         });
     }
     _showForm() {
@@ -73,7 +70,7 @@ class App {
 
     }
 }
-
+const app = new App();
 //  What I've Done is
 // 1. I've written spaggettie code by 
 // 2. I should've writen marker and map code at submit from event
