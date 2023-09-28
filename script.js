@@ -18,6 +18,8 @@ class App {
     #mapEvent;
     constructor() {
         this._getPosition();
+        form.addEventListener('submit', this._newWorkout.bind(this));
+        inputType.addEventListener('change', this._changeFields.bind(this));
     }
     _getPosition() {
         if (navigator.geolocation) {
@@ -46,67 +48,63 @@ class App {
             .bindPopup('A pretty CSS popup.<br> Easily customizable.')
             .openPopup();
         // to identify the click coords in the map
-        this.#map.on('click', function (e) {
-            this.#mapEvent = e;
-        });
+        this.#map.on('click', this._showForm.bind(this));
+
     }
-    _showForm() {
+    _showForm(mapE) {
+        this.#mapEvent = mapE;
         form.classList.remove('hidden');
         inputDistance.focus();
     }
-    _changeFields() {
+    _changeFields(e) {
         // change field based on type
         //  he has done it using toggeling
         // But I think it's better to keep it as generic as possible
-        inputType.addEventListener('change', function (e) {
-            if (inputType.value.toLowerCase() == 'cycling') {
-                inputElevation.closest('.form__row').classList.remove('form__row--hidden');
-                inputCadence.closest('.form__row').classList.add('form__row--hidden');
-            } else if (inputType.value.toLowerCase() == 'running') {
-                inputElevation.closest('.form__row').classList.add('form__row--hidden');
-                inputCadence.closest('.form__row').classList.remove('form__row--hidden');
-            }
-        });
+        e.preventDefault();
+        if (inputType.value.toLowerCase() === 'cycling') {
+            inputElevation.closest('.form__row').classList.remove('form__row--hidden');
+            inputCadence.closest('.form__row').classList.add('form__row--hidden');
+        } else if (inputType.value.toLowerCase() === 'running') {
+            inputElevation.closest('.form__row').classList.add('form__row--hidden');
+            inputCadence.closest('.form__row').classList.remove('form__row--hidden');
+        }
+
+    }
+    _newWorkout(e) {
+        e.preventDefault();
+        inputDistance.value = inputDuration.value = inputCadence.value = '';
+        const inputTypeValue = inputType.value.toLowerCase();
+        // console.log(lat, lng);
+        let className = 'cycling-popup';
+        const dateOptions = {
+            month: "long",
+            day: "numeric",
+        }
+        const today = new Intl.DateTimeFormat("en-US", dateOptions).format(Date.now())
+        let popUpContent = `🚴‍♀️ Cycling on ${today}`;
+        if (inputTypeValue == 'running') {
+            className = 'running-popup';
+            popUpContent = `🏃‍♂️ Running on ${today}`;
+        }
+        // display Marker
+        const { lat, lng } = this.#mapEvent.latlng;
+        const markerOptions = {
+            autoClose: false,
+            maxWidth: 250,
+            maxHeight: 100,
+            closeOnClick: false,
+            className: className
+
+        }
+        L
+            .marker([lat, lng]).addTo(this.#map)
+            .bindPopup(L.popup(markerOptions)).setPopupContent(popUpContent)
+            .openPopup();
 
     }
 }
+
 const app = new App();
 //  What I've Done is
 // 1. I've written spaggettie code by 
 // 2. I should've writen marker and map code at submit from event
-form.addEventListener('submit', function (e) {
-    e.preventDefault();
-    inputDistance.value = inputDuration.value = inputCadence.value = '';
-    const inputTypeValue = inputType.value.toLowerCase();
-
-
-
-    // console.log(lat, lng);
-    let className = 'cycling-popup';
-    const dateOptions = {
-        month: "long",
-        day: "numeric",
-    }
-    const today = new Intl.DateTimeFormat("en-US", dateOptions).format(Date.now())
-    let popUpContent = `🚴‍♀️ Cycling on ${today}`;
-    if (inputTypeValue == 'running') {
-        className = 'running-popup';
-        popUpContent = `🏃‍♂️ Running on ${today}`;
-    }
-    // display Marker
-    const { lat, lng } = mapEvent.latlng;
-    const markerOptions = {
-        autoClose: false,
-        maxWidth: 250,
-        maxHeight: 100,
-        closeOnClick: false,
-        className: className
-
-    }
-    L
-        .marker([lat, lng]).addTo(map)
-        .bindPopup(L.popup(markerOptions)).setPopupContent(popUpContent)
-        .openPopup();
-
-});
-
