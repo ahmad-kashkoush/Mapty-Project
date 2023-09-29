@@ -149,6 +149,15 @@ class App {
         inputDistance.value = inputDuration.value = inputCadence.value = '';
         inputDistance.focus();
     }
+    _hideForm() {
+        inputDistance.value = inputDuration.value = inputCadence.value = '';
+        // I want list to move to form place without animation
+        // animation doesn't support display none
+        // then set form display to none, and update it later
+        form.style.display = 'none'
+        form.classList.add('hidden');
+        setTimeout(() => form.style.display = 'grid', 1000);
+    }
 
     _changeFields(e) {
         // change field based on type
@@ -200,6 +209,7 @@ class App {
         this.#workouts.push(workout)
         this._renderWorkoutMarker(workout);
         this._renderWorkoutList(workout);
+        this._hideForm();
 
     }
     _renderWorkoutMarker(workout) {
