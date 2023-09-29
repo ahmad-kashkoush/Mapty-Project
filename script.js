@@ -10,9 +10,84 @@ const inputDistance = document.querySelector('.form__input--distance');
 const inputDuration = document.querySelector('.form__input--duration');
 const inputCadence = document.querySelector('.form__input--cadence');
 const inputElevation = document.querySelector('.form__input--elevation');
+class Workout {
+    #distance; #duration;
+    #coords;
+    #date = new Date();
+    #id = (Date.now() + '').slice(-10);
+    constructor(options) {
+        this.#distance = options.distance ?? 0;
+        this.#duration = options.duration ?? 0;
+        this.#coords = options.coords ?? [30, 30];// [lat, lng]
 
-// Geolocation
+    }
+    dateFormatted() {
+        const dateOptions = {
+            day: 'numeric',
+            month: 'long'
+        }
+        return new Intl.DateTimeFormat("en-US", dateOptions).format(this.date)
 
+    }
+    get duration() { return this.#duration; }
+    get distance() { return this.#distance; }
+    get coords() { return this.#coords; }
+    get date() { return this.#date; }
+
+};
+class Running extends Workout {
+    #name; #cadence;
+    #pace;
+    constructor(options) {
+        super(options);
+        this.#name = options.name ?? 'running';
+        this.#cadence = options.cadence ?? 0;
+        this.calcPace();
+    }
+    calcPace() {
+        this.#pace = this.duration / this.distance;
+        return this.#pace;
+    }
+    get name() { return this.#name; }
+    get cadence() { return this.#cadence; }
+
+};
+
+class Cycling extends Workout {
+    #name; #elevationGain;
+    #speed;
+    constructor(options) {
+        super(options);
+        this.#name = options.name ?? 'cycling';
+        this.#elevationGain = options.elevationGain;
+        this.calcSpeed();
+    }
+
+    calcSpeed() {
+        this.#speed = this.distance / (this.duration / 60);
+        return this.#speed;
+    }
+    get name() { return this.#name; }
+    get elevationGain() { return this.#elevationGain; }
+
+};
+const runOptions = {
+    distance: 10,
+    duration: 60,
+    cadence: 60,
+
+}
+const run = new Running(runOptions);
+console.log(run);
+const cycleOptions = {
+    distance: 50,
+    duration: 60,
+    elevationGain: 40
+}
+
+
+const cycle = new Cycling(cycleOptions);
+console.log(cycle);
 class App {
     #map;
     #mapEvent;
