@@ -48,7 +48,7 @@ user should be able to:
 3. Git workflow
 4. How to use API and read API documentation
 5. How to use Local storage API
-6. [My notes ]()\_later
+6. [My notes ]()
 
 ### Useful resources
 
