@@ -29,11 +29,7 @@ user should be able to:
 
 #### video
 
-
-
 https://github.com/ahmad-kashkoush/Mapty-Project/assets/89735230/7a414bfc-1e40-4756-8295-1a2848e83df5
-
-
 
 #### Live Site URL => [Link](https://mapty-project-phi.vercel.app/)
 
@@ -52,7 +48,7 @@ https://github.com/ahmad-kashkoush/Mapty-Project/assets/89735230/7a414bfc-1e40-4
 3. Git workflow
 4. How to use API and read API documentation
 5. How to use Local storage API
-6. [My notes ]()
+6. [My notes ](https://github.com/ahmad-kashkoush/Js-Jonas/tree/main/15-Mapty)
 
 ### Useful resources
 
